@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -31,6 +33,11 @@ public class Book implements Serializable {
 	String isbn;
 	String title;
 	@ManyToMany  //Hibernate will make table book_authors
+	@JoinTable(
+			name = "BOOK_AUTHORS",
+			joinColumns = @JoinColumn(name = "BOOK_ISBN"),
+			inverseJoinColumns = @JoinColumn(name = "AUTHORS_NAME")
+			)
 	Set<Author> authors;
 	@ManyToOne  // Many books to One publisher, includes publisher_name(ID) in the table book
 	Publisher publisher;

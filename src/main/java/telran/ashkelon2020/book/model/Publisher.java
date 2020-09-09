@@ -1,9 +1,11 @@
 package telran.ashkelon2020.book.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -25,5 +27,14 @@ public class Publisher implements Serializable {
 	
 	@Id
 	String publisherName;
+	@OneToMany(mappedBy = "publisher")  //mappedBy устанавливается на стороне родительской сущности
+	Set<Book> books;
+	
+	public Publisher(String publisherName) {
+		super();
+		this.publisherName = publisherName;
+	}
+	
+	
 
 }

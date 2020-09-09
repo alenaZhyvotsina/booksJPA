@@ -80,8 +80,14 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Iterable<BookDto> findBooksByAuthor(String authorName) {		
+		/*
 		Author author = authorRepository.findById(authorName).orElseThrow(() -> new EntityNotFoundException());
 		return bookRepository.findByAuthorsName(authorName).stream()
+				.map(b -> modelMapper.map(b, BookDto.class))
+				.collect(Collectors.toList());
+				*/
+		Author author = authorRepository.findById(authorName).orElseThrow(() -> new EntityNotFoundException());
+		return author.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.collect(Collectors.toList());
 		
@@ -90,7 +96,12 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public Iterable<BookDto> findBooksByPublisher(String publisherName) {
 		Publisher publisher = publisherRepository.findById(publisherName).orElseThrow(() -> new EntityNotFoundException());
+		/*
 		return bookRepository.findByPublisherPublisherName(publisherName).stream()
+				.map(b -> modelMapper.map(b, BookDto.class))
+				.collect(Collectors.toList());
+				*/
+		return publisher.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.collect(Collectors.toList());
 	}
@@ -104,9 +115,16 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Iterable<String> findPublishersByAuthor(String authorName) {
+		/*
 		Author author = authorRepository.findById(authorName).orElseThrow(() -> new EntityNotFoundException());
 		return bookRepository.findPublishersByAuthor(authorName);
+		*/
+		Author author = authorRepository.findById(authorName).orElseThrow(() -> new EntityNotFoundException());
+		return publisherRepository.findDistinctByBooksAuthorsName(authorName)
+				.map(p -> p.getPublisherName())
+				.collect(Collectors.toSet());
 	}
 
 	@Override
